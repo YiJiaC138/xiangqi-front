@@ -14,6 +14,7 @@ interface RenderChessBoardProps {
     onMove: (source: {x: number, y: number}, target: {x: number, y: number}) => void;
     onReset: () => void;
     onUndo: () => void;
+    onBackToMenu: () => void;
     sidePanel?: React.ReactNode;
 }
 
@@ -30,6 +31,7 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
     onMove,
     onReset,
     onUndo,
+    onBackToMenu,
     sidePanel
 }) => {
   
@@ -154,6 +156,7 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
             <div className="controls">
                 <button onClick={onReset}>Reset Game</button>
                 <button onClick={onUndo}>Undo Move</button>
+                <button onClick={onBackToMenu}>Main Menu</button>
             </div>
         </div>
         {sidePanel}

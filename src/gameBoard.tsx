@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import RenderChessBoard from './chessboard';
 import PanelLog, { MoveLogEntry } from './panellog';
@@ -8,6 +9,7 @@ import { ChessPiece, Player, PieceType, getPieceCharacter } from './chessPiece';
 const API_URL = "http://localhost:8080/api/game";
 
 const GameBoard = () => {
+  const navigate = useNavigate();
   // State handlers
   const [pieces, setPieces] = useState<ChessPiece[]>([]); 
   const [availableMoves, setAvailableMoves] = useState<{x: number, y: number}[]>([]); 
@@ -166,6 +168,7 @@ const GameBoard = () => {
         onMove={handleMove}
         onReset={resetBoard}
         onUndo={undoMove}
+        onBackToMenu={() => navigate('/')}
         sidePanel={<PanelLog history={history} />}
     />
   );

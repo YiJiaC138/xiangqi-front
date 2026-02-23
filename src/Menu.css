@@ -1,0 +1,56 @@
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* height: 100vh;  Removed to fit within existing layout */
+    padding: 2rem;
+    /* background-color: #242424; Inherit from body */
+    color: rgba(255, 255, 255, 0.87);
+    width: 100%;
+}
+
+.menu-title {
+    font-size: 3.2em;
+    margin-bottom: 2rem;
+    font-family: 'Noto Serif SC', serif;
+    color: #e0e0e0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.menu-button {
+    padding: 1rem 2.5rem;
+    font-size: 1.5rem;
+    border: 2px solid #646cff;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+}
+
+.menu-button:hover {
+    background-color: #646cff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(100, 108, 255, 0.3);
+}
+
+.menu-button:active {
+    transform: translateY(0);
+}
+
+.start-button {
+    border-color: #4CAF50;
+}
+
+.start-button:hover {
+    background-color: #45a049;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}

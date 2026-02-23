@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
+import { Routes, Route } from 'react-router-dom'
 import GameBoard from './gameBoard'
+import Menu from './Menu'
 import Notification from './Notification'
 import axios from 'axios'
 
@@ -40,7 +41,10 @@ function App() {
         type={connectionStatus} 
         show={showNotification} 
       />
-      <GameBoard/>
+      <Routes>
+        <Route path="/" element={<Menu />} />
+        <Route path="/game" element={<GameBoard />} />
+      </Routes>
     </div>
   )
 }
