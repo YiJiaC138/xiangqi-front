@@ -1,21 +1,25 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import './Menu.css';
+import RoomSelection from './components/RoomSelection';
 
 const Menu: React.FC = () => {
-    const navigate = useNavigate();
+    const [showRoomSelection, setShowRoomSelection] = useState(false);
 
     return (
         <div className="menu-container">
             <h1 className="menu-title">Xiangqi (Chinese Chess)</h1>
-            <div className="menu-options">
-                <button 
-                    className="menu-button start-button" 
-                    onClick={() => navigate('/game')}
-                >
-                    Start Game
-                </button>
-            </div>
+            {!showRoomSelection ? (
+                <div className="menu-options">
+                    <button 
+                        className="menu-button start-button" 
+                        onClick={() => setShowRoomSelection(true)}
+                    >
+                        Start Game
+                    </button>
+                </div>
+            ) : (
+                <RoomSelection />
+            )}
         </div>
     );
 };

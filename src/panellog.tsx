@@ -1,15 +1,6 @@
 import React from 'react';
 import { Player } from './chessPiece';
-
-export interface MoveLogEntry {
-    player: Player;
-    pieceChar: string;
-    source: { x: number, y: number };
-    target: { x: number, y: number };
-    capturedChar?: string;
-    isCheck?: boolean;
-    isCheckmate?: boolean;
-}
+import { MoveLogEntry } from './types/websocket';
 
 interface PanelLogProps {
     history: MoveLogEntry[];

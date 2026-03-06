@@ -4,46 +4,33 @@ import { Routes, Route } from 'react-router-dom'
 import GameBoard from './gameBoard'
 import Menu from './Menu'
 import Notification from './Notification'
-import axios from 'axios'
-
-const API_URL = "http://localhost:8080/api/game";
+import { useWebSocket } from './context/WebSocketContext'
 
 function App() {
-  const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | 'loading'>('loading');
+  const { isConnected } = useWebSocket();
   const [showNotification, setShowNotification] = useState(true);
-  const [message, setMessage] = useState('Checking Connection...');
+  const [message, setMessage] = useState('Connecting to Server...');
 
   useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        // Try to fetch board state as a health check
-        await axios.get(`${API_URL}/board`);
-        setConnectionStatus('success');
-        setMessage('Backend Connected Successfully');
-        // Hide success message after 3 seconds
-        setTimeout(() => setShowNotification(false), 3000);
-      } catch (err) {
-        console.error("Connection check failed:", err);
-        setConnectionStatus('error');
-        setMessage('Backend Connection Failed');
-        // Keep error message visible
-        setShowNotification(true);
-      }
-    };
-
-    checkConnection();
-  }, []);
+    if (isConnected) {
+      setMessage('Server Connected Successfully');
+      setTimeout(() => setShowNotification(false), 3000);
+    } else {
+      setMessage('Connecting to Server...');
+      setShowNotification(true);
+    }
+  }, [isConnected]);
 
   return (
     <div>
       <Notification 
         message={message} 
-        type={connectionStatus} 
+        type={isConnected ? 'success' : 'loading'} 
         show={showNotification} 
       />
       <Routes>
         <Route path="/" element={<Menu />} />
-        <Route path="/game" element={<GameBoard />} />
+        <Route path="/game/:roomId" element={<GameBoard />} />
       </Routes>
     </div>
   )

@@ -5,6 +5,7 @@ interface RenderChessBoardProps {
     pieces: ChessPiece[];
     availableMoves: {x: number, y: number}[];
     playerTurn: Player;
+    myColor: Player | null; // Added prop
     isCheckmate: boolean;
     isGameOver: boolean;
     isCheck: boolean;
@@ -22,6 +23,7 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
     pieces,
     availableMoves,
     playerTurn,
+    myColor,
     isCheckmate,
     isGameOver,
     isCheck,
@@ -52,11 +54,16 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
     // console.log("Dragging piece:", pieceId);
     const piece = pieces.find(p => p.id === pieceId);
     if (!piece) return;
+    
+    // Check if player is allowed to move this piece
+    if (myColor && piece.player !== myColor) {
+        console.warn(`Cannot drag ${piece.player} piece as ${myColor}`);
+        return;
+    }
 
-    // Only allow moving current player's pieces
     if (piece.player !== playerTurn) {
-        // e.preventDefault(); // Prevents dragging, but might need to be done onDragStart logic in RenderPiece
-      return;
+        console.warn(`It is ${playerTurn}'s turn, not ${piece.player}'s`);
+        return;
     }
     
     // Calculate offset from mouse to element top-left
@@ -113,7 +120,7 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
     const piece = pieces.find(p => p.id === pieceId);
     
     if (!piece) return;
-    
+    console.log("Dropping piece:", pieceId, "at", x, y);
     // Check if move is in available moves
     const isLegal = availableMoves.some(m => m.x === x && m.y === y);
     if (!isLegal) {
