@@ -34,6 +34,18 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
     onBackToMenu,
     sidePanel
 }) => {
+  const [draggingPieceId, setDraggingPieceId] = React.useState<string | null>(null);
+  const [dragPosition, setDragPosition] = React.useState<{x: number, y: number} | null>(null);
+  const dragOffset = React.useRef<{x: number, y: number}>({x: 0, y: 0});
+  
+  // Empty image for drag ghost
+  const emptyImg = React.useRef<HTMLImageElement | null>(null);
+
+  React.useEffect(() => {
+    const img = new Image();
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    emptyImg.current = img;
+  }, []);
   
   // Event handlers
   const handleDragStart = (e: React.DragEvent, pieceId: string) => {
@@ -46,9 +58,49 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
         // e.preventDefault(); // Prevents dragging, but might need to be done onDragStart logic in RenderPiece
       return;
     }
+    
+    // Calculate offset from mouse to element top-left
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    dragOffset.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+    
+    // Set initial drag position
+    setDragPosition({
+        x: e.clientX - dragOffset.current.x,
+        y: e.clientY - dragOffset.current.y
+    });
 
     e.dataTransfer.setData("PieceId", pieceId);
+    e.dataTransfer.effectAllowed = "move";
+    
+    // Set empty drag image
+    if (emptyImg.current) {
+        e.dataTransfer.setDragImage(emptyImg.current, 0, 0);
+    }
+    
+    // Use setTimeout to ensure the drag image is created before hiding the element
+    setTimeout(() => {
+        setDraggingPieceId(pieceId);
+    }, 0);
+
     onGetMoves(piece);
+  }
+
+  const handleDrag = (e: React.DragEvent) => {
+    // Check if valid coordinates (DragEvent sometimes fires with 0,0 at end)
+    if (e.clientX === 0 && e.clientY === 0) return;
+    
+    setDragPosition({
+        x: e.clientX - dragOffset.current.x,
+        y: e.clientY - dragOffset.current.y
+    });
+  }
+
+  const handleDragEnd = () => {
+    setDraggingPieceId(null);
+    setDragPosition(null);
   }
 
   const handleDragOver = (e:React.DragEvent) => {
@@ -71,6 +123,8 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
     }
 
     onMove({x: piece.x, y: piece.y}, {x, y});
+    setDraggingPieceId(null);
+    setDragPosition(null);
   }
 
   // Render the chessboard grid here
@@ -146,6 +200,9 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
                     type={piece.type}
                     player={piece.player}
                     onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    onDrag={handleDrag}
+                    isDragging={draggingPieceId === piece.id}
                 />
                 )}
                 </div>
@@ -153,6 +210,28 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
             )}
             </div>
             </div>
+            {/* Custom Drag Layer */}
+            {draggingPieceId && dragPosition && (() => {
+                const piece = pieces.find(p => p.id === draggingPieceId);
+                if (!piece) return null;
+                return (
+                    <div style={{
+                        position: 'fixed',
+                        left: dragPosition.x,
+                        top: dragPosition.y,
+                        zIndex: 1000,
+                        pointerEvents: 'none',
+                    }}>
+                         <RenderPiece
+                            id={piece.id}
+                            type={piece.type}
+                            player={piece.player}
+                            onDragStart={()=>{}} // Dummy
+                            onDragEnd={()=>{}} // Dummy
+                        />
+                    </div>
+                );
+            })()}
             <div className="controls">
                 <button onClick={onReset}>Reset Game</button>
                 <button onClick={onUndo}>Undo Move</button>

@@ -18,6 +18,9 @@ interface ChessPieceProps {
     type: PieceType;
     player: Player;
     onDragStart: (e: React.DragEvent, id: string) => void;
+    onDragEnd?: (e: React.DragEvent) => void;
+    onDrag?: (e: React.DragEvent) => void;
+    isDragging?: boolean;
 }
 
 export function getPieceCharacter(type: PieceType, player: Player): string {
@@ -42,13 +45,19 @@ export function getPieceCharacter(type: PieceType, player: Player): string {
     }
 }
 
-function RenderPiece({ id, type, player, onDragStart }: ChessPieceProps){
+function RenderPiece({ id, type, player, onDragStart, onDragEnd, onDrag, isDragging }: ChessPieceProps){
     return (
         <div
             className={`chess-piece ${type} ${player}`}
             draggable
             onDragStart={(e) => onDragStart(e, id)}
-            style={{ position: 'absolute', zIndex: 10}}
+            onDragEnd={onDragEnd}
+            onDrag={onDrag}
+            style={{ 
+                position: 'absolute', 
+                zIndex: 10,
+                opacity: isDragging ? 0 : 1
+            }}
         >
         <span className="piece-marker">
             <span className="piece-text"
