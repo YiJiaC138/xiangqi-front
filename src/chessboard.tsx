@@ -48,6 +48,13 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
     img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     emptyImg.current = img;
   }, []);
+
+  const getLogicalPos = (visualRow: number, visualCol: number) => {
+    if (myColor === 'black') {
+      return { x: 8 - visualCol, y: 9 - visualRow };
+    }
+    return { x: visualCol, y: visualRow };
+  };
   
   // Event handlers
   const handleDragStart = (e: React.DragEvent, pieceId: string) => {
@@ -157,12 +164,16 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
                 <div className="xiangqi-board">
                 {Array.from({ length: 9 }).map((_, row) =>
                 Array.from({ length: 8 }).map((_, col) => {
-                const isRiver = row === 4;
+                const { x: lx, y: ly } = getLogicalPos(row, col);
+                const logicalRow = (myColor === 'black') ? ly - 1 : ly;
+                const logicalCol = (myColor === 'black') ? lx - 1 : lx;
+                
+                const isRiver = logicalRow === 4;
                 const isPalace = (
                 // Black palace: top 3 rows in center
-                (row >= 0 && row <= 1 && col >= 3 && col <= 4) ||
+                (logicalRow >= 0 && logicalRow <= 1 && logicalCol >= 3 && logicalCol <= 4) ||
                 // Red palace: bottom 3 rows in center
-                (row >= 7 && row <= 8 && col >= 3 && col <= 4)
+                (logicalRow >= 7 && logicalRow <= 8 && logicalCol >= 3 && logicalCol <= 4)
                 );
 
                 let className = "cell";
@@ -177,10 +188,11 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
             <div className="front-layer">
             {Array.from({ length: 10 }).map((_, row) =>
                 Array.from({ length: 9 }).map((_, col) => {
+                const { x: logicalCol, y: logicalRow } = getLogicalPos(row, col);
                 // Check if there is a piece on this position
-                const piece = pieces.find(p => p.x === col && p.y === row);
+                const piece = pieces.find(p => p.x === logicalCol && p.y === logicalRow);
                 // Check availability
-                const isAvailableMove = availableMoves.some((m) => m.x === col && m.y === row);
+                const isAvailableMove = availableMoves.some((m) => m.x === logicalCol && m.y === logicalRow);
 
                 return(
                 <div
@@ -197,7 +209,7 @@ const RenderChessBoard: React.FC<RenderChessBoardProps> = ({
                     pointerEvents: "auto"
                     }}
                     onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, col, row)}
+                    onDrop={(e) => handleDrop(e, logicalCol, logicalRow)}
                 >
                 {isAvailableMove && (
                     <div className={`move-indicator ${piece ? "capture" : "empty"}`}></div>
