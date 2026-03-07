@@ -26,6 +26,30 @@ const GameBoard = () => {
   const [history, setHistory] = useState<MoveLogEntry[]>([]);
   
   useEffect(() => {
+    const handleBeforeUnload = () => {
+        if (roomId) {
+            sendMessage({ type: 'LEAVE_GAME', payload: { roomId } });
+        }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [roomId, sendMessage]);
+
+  const handleLeaveGame = () => {
+      if (roomId) {
+          console.log("User manually leaving game:", roomId);
+          sendMessage({
+              type: 'LEAVE_GAME',
+              payload: { roomId }
+          });
+      }
+      navigate('/');
+  };
+
+  useEffect(() => {
     // If we have initial state from navigation (from Join Room), use it
     if (location.state?.initialGameState) {
         console.log("Using initial game state from location");
@@ -178,7 +202,7 @@ const GameBoard = () => {
         onMove={handleMove}
         onReset={resetBoard}
         onUndo={undoMove}
-        onBackToMenu={() => navigate('/')}
+        onBackToMenu={handleLeaveGame}
         sidePanel={<PanelLog history={history} />}
     />
   );
