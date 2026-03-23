@@ -42,6 +42,10 @@ npm run dev
 - [x] **Game Controls**:
   - **Reset Game**: Button to restart the match.
   - **Undo Move**: Ability to revert the last move.
-- [ ] **Game Lobby**: Can join game rooms.
-- [ ] **Multiplayer Support**: Enable multiple browsers to play the same game 
-- [ ] **Deployment**: Deploy on GitHub 
+- [x] **Game Lobby**: Can join game rooms.
+- [x] **Multiplayer Support**: Enable multiple browsers to play the same game 
+- [x] **Deployment**: Deploy on GitHub 
+
+Backend Logic and be found [here](https://github.com/YiJiaC138/xiangqi)
+
+[DEPLOYED HERE](https://xiangqi-front.onrender.com) (Takes awhile upon bootup)
