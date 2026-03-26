@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWebSocket } from '../context/WebSocketContext';
 import { Room, PlayerColor } from '../types/websocket';
 import { useNavigate } from 'react-router-dom';
+import '../Menu.css';
 
 const RoomSelection: React.FC = () => {
   const { isConnected, sendMessage, subscribe } = useWebSocket();
@@ -46,12 +47,25 @@ const RoomSelection: React.FC = () => {
   };
 
   if (!isConnected) {
-    return <div>Connecting to server...</div>;
+    return (
+      <div className="menu-container">
+        <button className="back-arrow" onClick={() => navigate('/')} title="Back to Menu">
+          &#8592;
+        </button>
+        <h1 className="menu-title">Xiangqi (Chinese Chess)</h1>
+        <div>Connecting to server... (This may take a while as it is using a free tier server :P)</div>
+      </div>
+    );
   }
 
   return (
-    <div className="room-selection">
-      <h2>Select a Room</h2>
+    <div className="menu-container">
+      <button className="back-arrow" onClick={() => navigate('/')} title="Back to Menu">
+        &#8592;
+      </button>
+      <h1 className="menu-title">Xiangqi (Chinese Chess)</h1>
+      <div className="room-selection">
+        <h2>Select a Room</h2>
       <div className="rooms-list">
         {rooms.map((room) => (
           <div key={room.id} className="room-card">
@@ -73,6 +87,14 @@ const RoomSelection: React.FC = () => {
           </div>
         ))}
       </div>
+      <button 
+        className="menu-button" 
+        style={{ marginTop: '2rem' }}
+        onClick={() => navigate('/')}
+      >
+        Back to Menu
+      </button>
+    </div>
     </div>
   );
 };
