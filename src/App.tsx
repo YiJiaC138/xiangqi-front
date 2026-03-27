@@ -3,6 +3,7 @@ import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import GameBoard from './gameBoard'
 import Menu from './Menu'
+import RoomSelection from './components/RoomSelection'
 import Notification from './Notification'
 import { useWebSocket } from './context/WebSocketContext'
 
@@ -42,6 +43,7 @@ function App() {
       />
       <Routes>
         <Route path="/" element={<Menu />} />
+        <Route path="/select" element={<RoomSelection />} />
         <Route path="/game/:roomId" element={<GameBoard />} />
       </Routes>
     </div>
